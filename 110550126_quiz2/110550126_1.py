@@ -17,6 +17,5 @@ if __name__ == "__main__":
     dim2 = (9,7)
     print("dim:",dim1,"error:",vowel_rate(words,dim1))
     print()
-    print("1253467")
     print("dim:",dim2,"error:",vowel_rate(words,dim2))
     
