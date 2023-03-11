@@ -3,48 +3,41 @@ def IC(mes):
     for i in mes:
         if i.isalpha():
             each[ord(i.lower())-ord('a')]+=1
-
     total = sum(each)
     IC = [(i*(i-1))/(total*(total-1)) for i in each]
-    """ print(each)
-    print(IC)
-    print(total)"""
-    
-    #print("Sum of IC:",sum(IC))
     return sum(IC)
+
 def likely_char(mes):
     each = [0]*26
     english_freq  = [0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 0.02758, 0.00978, 0.0236, 0.0015, 0.01974, 0.00074]
     for i in mes:
         if i.isalpha():
             each[ord(i.lower())-ord('a')]+=1
-    
     total = sum(each)
     mes_freq = [i/total for i in each]
-    print(mes_freq)
-    print(sum(mes_freq))
     error = float('inf')
     index = -1
-    for i in range(0,26):
+    for i in range(26):
         now_error = 0
         for j in range(0,26):
-            now_error+=abs(mes_freq[j]-english_freq[i])
+            now_error+=(mes_freq[j]/total-english_freq[(i+j)%26])*(mes_freq[j]/total-english_freq[(i+j)%26])/(english_freq[(i+j)%26]);
         if now_error<error:
             error = now_error
             index = i
-        mes_freq = [mes_freq[25]]+[mes_freq[t] for t in range(25)]
-        
-    key = chr(index+ord('A'))
-    print(f'key = {key}')
+    key = chr((ord('A')-index+26))
+    key = chr(ord('A')+(26-index)%26)
     return key
-    """ abc
-        bbb
-        bcd
-        名:1 2 3 4 1
-        密:1 2 3 4 1 :a(0)
-        密:1 1 2 3 4 :b(1)
-    """
+def cti(c):
+    return ord(c.upper())-ord('A')
+def itc(i):
+    return chr((i+26)%26+ord('A'))
+def decryption(mes,key):
+    ans = ""
+    for i in range(len(mes)):
+        ans+=itc(cti(mes[i])-cti(key[i%len(key)]))
+    return ans
     
+
 if __name__ =="__main__":
     mes_1 = """ZQQTK PQUWD PGMWD BQTXY LFQWL SHAJB UCIPV KUQEJ RBAAC LRSIZ ZCRWT LDFMT PGYXF ISOSE ASZXN PHTAY HHIIR ADDIJ LBFO
 E VKUWW VFFLV TCEXG HFFXF ZVGXF BFQEI ZOSEZ UGFGF UJUGK PCZWZ UQQJI VAFLV CSDCX YOPYR SQTEI HQFII VTAYI LRGGR AWAR
@@ -69,7 +62,6 @@ WHMU BOXWN LAGWK YSSEI KHTID HGRSI TWZKG HFFWF MOSVV HHILF SSIID BGFQV HGGVV AVQ
 SW ISURX ZPKAY VAFLV FODIJ BFDSL URQHR URURT VBFID WZMXZ UUFLV PBOMU LBFWZ UHTIZ YZUZV ZCDGF URUXZ VBILZ JVFVR KW
 FMF UVMWY HBPIU KCIRK VIEAV TIEXI HHTII JCZWZ KSDXY LUQRV YOXFV HFURX VTFLV DVAPV UODVR AWHIK OOZXY LFQWG LQFMM
 LDDSS HPUPZ AMAJZ AGPIK HWXW"""
-    "HOMER"
     mes_2 = """IVIKDKDQMJGLPWLZGMPFBJIIDBBYSLJDXFGBIWWEHAPHEYSGNCCYOOTSTZABCOBVRTAZEYWVWWAZAIDGAZ
 PETHPVBPWOBVJXGFMDOBCGPFKXKSZZAIGCJRPETACJHUTHPVHKJHPZHFPMEVZEQSBYOMHSDVFTASFGZTC
 OBZCGHFMDOBCWVNVBRVKRGXDBMKFBTGBVGMPTBVFMTGBLBMXZWESHGCBYSKDTBYSFWOARQHCJQEQBC
@@ -79,7 +71,6 @@ CWVRBHJHPFILTCNYWLUOBYSKHAIEGBDBBYSKTKIJHATSFGZTCOBZCGIVIKVXLOAZBAXRQEUYDFITFBBS
 PHPVKTHAIUOGSHPRHMWSGNWLWSLKCTKCQUOGPGGCIFDFBYOMWSPRRLDAMUWLTOAVKAXQPTONHSLYWL
 HSOISZPHQFBBRCCCRMWWVBCYCCWKVXGOLVENPHMJCEJHQFBLIVMJSMWSVYOWICJVGBUHMUOGSPICOGR
 SLRUTXBAKSTRVWKVXG"""
-    "POIROT"
     mes = ""
     while True:
         try:
@@ -113,9 +104,10 @@ SLRUTXBAKSTRVWKVXG"""
     groups = [""]*key_len
     for j in range(len(mes)):
         groups[j%key_len]+=mes[j]
-    print(groups)
     for i in range(key_len):
         key+=likely_char(groups[i])
-    print(key)
-        
+    print(f"key word = {key}")
+    ans = decryption(mes,key)
+    print(ans)
+    
         
