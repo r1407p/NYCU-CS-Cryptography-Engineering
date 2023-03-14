@@ -113,5 +113,8 @@ SLRUTXBAKSTRVWKVXG"""
     print(f"key word = {key}")
     ans = decryption(mes,key)
     print(ans)
+    with open(f"110550126_msg{key}.txt",'w+') as f:
+        f.write(ans)
+        f.write('\n')
     
         
