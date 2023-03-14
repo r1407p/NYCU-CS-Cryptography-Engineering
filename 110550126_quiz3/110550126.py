@@ -20,12 +20,14 @@ def likely_char(mes):
     for i in range(26):
         now_error = 0
         for j in range(0,26):
-            now_error+=(mes_freq[j]/total-english_freq[(i+j)%26])*(mes_freq[j]/total-english_freq[(i+j)%26])/(english_freq[(i+j)%26]);
+            now_error+=(mes_freq[j]-english_freq[(i+j)%26])**2/(english_freq[(i+j)%26]);
         if now_error<error:
             error = now_error
             index = i
+        print(f"\"{chr(ord('A')+(26-i)%26)}\": {now_error}")
     key = chr((ord('A')-index+26))
     key = chr(ord('A')+(26-index)%26)
+    print(f"the key letter is {key}")
     return key
 def cti(c):
     return ord(c.upper())-ord('A')
@@ -80,32 +82,34 @@ SLRUTXBAKSTRVWKVXG"""
             print("EOF")
             break
     mes = mes.replace(" ","").replace('\n',"").replace("　","")
-    mes_1_IC = IC(mes_1)
-    mes_2_IC = IC(mes_2)
-    print(mes)
+    # mes_1_IC = IC(mes_1)
+    # mes_2_IC = IC(mes_2)
     error = []
     for i in range(1, 10):
         groups = [""]*i
         for j in range(len(mes)):
             groups[j%i]+=mes[j]
-        #print(groups)
+        
         ICS = [IC(mes)for mes in groups]
-        #print(ICS)
         IC_mean = sum(ICS)/len(ICS)
+        
         print(f"{i} groups IC: {IC_mean}")
         print(f"relative error of IC in English: {abs(IC_mean-0.066)}")
         error.append(abs(IC_mean-0.066))
-    #print(error)
-    #print(error.index(min(error))+1)
+        
     key_len = error.index(min(error))+1
     print("================================")
     print(f"the most possible keyword length is {key_len}, with error = {min(error)}")
     key = ""
+    
     groups = [""]*key_len
     for j in range(len(mes)):
         groups[j%key_len]+=mes[j]
+        
     for i in range(key_len):
+        print(f"Chi-squared test of group {i+1}")
         key+=likely_char(groups[i])
+        
     print(f"key word = {key}")
     ans = decryption(mes,key)
     print(ans)
