@@ -116,5 +116,5 @@ SLRUTXBAKSTRVWKVXG"""
     with open(f"110550126_msg{key}.txt",'w+') as f:
         f.write(ans)
         f.write('\n')
-    
+    f.close()
         
